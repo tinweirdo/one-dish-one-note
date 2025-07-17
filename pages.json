@@ -1,0 +1,46 @@
+{
+	"pages": [
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "餐厅"
+			}
+		},
+		{
+			"path": "pages/index/user",
+			"style": {
+				"navigationBarTitleText": "用户"
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"backgroundColorTop": "#fe4a63",
+		"backgroundColorBottom": "#fe4a63",
+		"navigationBarBackgroundColor": "#fe4a63",
+		"backgroundColor": "#fe4a63",
+		"backgroundTextStyle": "light",
+		"enablePullDownRefresh": false //是否开启下拉刷新
+	},
+	"uniIdRouter": {},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#fe4a63",
+		"borderStyle": "black",
+		"backgroundColor": "#F8F8F8",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"iconPath": "static/images/dining.png",
+				"selectedIconPath": "static/images/dining_active.png",
+				"text": "餐厅"
+			},
+			{
+				"pagePath": "pages/index/user",
+				"iconPath": "static/images/user.png",
+				"selectedIconPath": "static/images/user_active.png",
+				"text": "我的"
+			}
+		]
+	}
+}
