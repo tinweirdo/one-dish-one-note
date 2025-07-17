@@ -1,11 +1,13 @@
 <template>
     <view class="user-header">
         <view class="user-left">
-            <image class="avatar"
-                src="https://cdn.jsdelivr.net/gh/tinweirdo/images/2025/d78575cf108e4547cf369ff8999dfff1.jpg" />
+            <view class="user-icon">
+                <image class="avatar"
+                    src="https://cdn.jsdelivr.net/gh/tinweirdo/images/2025/d78575cf108e4547cf369ff8999dfff1.jpg" />
+                <text class="user-name">婷</text>
+            </view>
             <view class="user-info">
                 <view class="user-name-row">
-                    <text class="user-name">婷</text>
                     <text class="user-role boss">老板</text>
                 </view>
             </view>
@@ -17,11 +19,14 @@
             </view>
         </view>
         <view class="user-right">
-            <image class="avatar"
-                src="https://cdn.jsdelivr.net/gh/tinweirdo/images/2025/d8ae9e5ce0fbd21612a0c9b5bd6d64c8.jpg" />
+            <view class="user-icon">
+                <image class="avatar"
+                    src="https://cdn.jsdelivr.net/gh/tinweirdo/images/2025/d8ae9e5ce0fbd21612a0c9b5bd6d64c8.jpg" />
+                <text class="user-name">官</text>
+            </view>
+
             <view class="user-info">
                 <view class="user-name-row">
-                    <text class="user-name">官</text>
                     <text class="user-role customer">顾客</text>
                 </view>
             </view>
@@ -39,7 +44,7 @@ export default {
     width: calc(100% - 80rpx);
     height: 60px;
     background: #fe4a63;
-    padding: 20rpx 40rpx;
+    padding:40rpx;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -51,16 +56,22 @@ export default {
     display: flex;
     align-items: center;
 }
-
+.user-left{
+    margin-left: 15px;
+}
+.user-right{
+    flex-direction: row-reverse;
+    margin-right: 15px;
+}
+.user-icon{
+    display: flex;
+    flex-direction: column;
+}
 .avatar {
     width: 90rpx;
     height: 90rpx;
     border-radius: 50%;
     border: 4rpx solid #fff;
-}
-
-.user-info {
-    margin-left: 16rpx;
 }
 
 .user-name-row {
@@ -69,15 +80,16 @@ export default {
 }
 
 .user-name {
-    font-size: 30rpx;
-    font-weight: bold;
+    font-size: 25rpx;
+    text-align: center;
+    font-weight: lighter;
+    margin-top: 10rpx;
 }
 
 .user-role {
     font-size: 22rpx;
-    margin-left: 10rpx;
     padding: 2rpx 16rpx;
-    border-radius: 20rpx;
+    border-radius: 10rpx;
     background: #fff;
     color: #fe4a63;
 }

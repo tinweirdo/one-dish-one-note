@@ -1,22 +1,23 @@
 <template>
     <view class="menu-section">
-        <view class="category-list">
+        <view class="category-list" v-if="!showDishForm">
             <view v-for="(cat, idx) in categories" :key="cat.id"
-                :class="['category-item', idx === currentCategory ? 'active' : '']" @click="selectCategory(idx)">
-                <text class="cat-emoji">{{ cat.emoji }}</text>
-                <text class="cat-name">{{ cat.name  }}</text>
+                :class="['category-item', idx === currentIndex ? 'active' : '']" @click="selectCategory(idx)">
+                <text class="cat-icon">{{ cat.icon }}</text>
+                <text class="cat-name">{{ cat.name }}</text>
             </view>
         </view>
-        <view class="dish-list">
+
+        <view class="dish-list" v-if="!showDishForm">
             <view class="dish-category-title">
-                <text>{{ categories[currentCategory].name }}</text>
-                <text class="cat-emoji">{{ categories[currentCategory].emoji }}</text>
+                <text>{{ categories[currentIndex].name }}</text>
+                <text class="cat-icon">{{ categories[currentIndex].icon }}</text>
             </view>
-            <view v-for="dish in categories[currentCategory].dishes" :key="dish.id" class="dish-item">
-                <image class="dish-img" :src="dish.img" />
+            <view v-for="dish in categories[currentIndex].dishes" :key="dish.id" class="dish-item">
+                <image class="dish-icon" :src="dish.icon" />
                 <view class="dish-info">
                     <view class="dish-title-row">
-                        <text class="dish-name">{{ dish.name  }}</text>
+                        <text class="dish-name">{{ dish.name }}</text>
                         <view class="dish-like">
                             <u-icon name="heart-fill" color="#fe4a63" size="22" />
                             <text class="like-num">{{ dish.likes }}</text>
@@ -29,161 +30,86 @@
                     <u-icon name="arrow-down" size="22" color="#fe4a63" style="margin-top: 10rpx;" />
                 </view>
             </view>
+
+            <view class="dish-list-bottom" @click="addDish">
+                <span class="add-icon">+</span>
+                <span class="add-text">添加商品</span>
+            </view>
         </view>
+        <dish v-if="showDishForm" :category-id="currentCategoryId" @close="onDishFormClose" @saved="onDishFormSaved" />
     </view>
 </template>
 <script>
+import Dish from './dish.vue'
 export default {
+    components: { Dish },
     data() {
         return {
-            currentCategory: 0,
-            categories: [
-                {
-                    id: 1,
-                    name: '健康蔬菜',
-                    emoji: '🥬',
-                    dishes: [
-                        { id: 1, name: '清炒藕片', img: '/static/logo.png', sold: 0, likes: 8 },
-                        { id: 2, name: '炒生菜', img: '/static/logo.png', sold: 0, likes: 5 },
-                        { id: 3, name: '香葱煎蛋', img: '/static/logo.png', sold: 0, likes: 8 },
-                        { id: 4, name: '清炒油麦菜', img: '/static/logo.png', sold: 0, likes: 5 },
-                        { id: 5, name: '清炒藕片', img: '/static/logo.png', sold: 0, likes: 8 },
-                        { id: 6, name: '炒生菜', img: '/static/logo.png', sold: 0, likes: 5 },
-                        { id: 7, name: '香葱煎蛋', img: '/static/logo.png', sold: 0, likes: 8 },
-                        { id: 8, name: '清炒油麦菜', img: '/static/logo.png', sold: 0, likes: 5 },
-                        { id: 9, name: '清炒藕片', img: '/static/logo.png', sold: 0, likes: 8 },
-                        { id: 10, name: '炒生菜', img: '/static/logo.png', sold: 0, likes: 5 },
-                        { id: 11, name: '香葱煎蛋', img: '/static/logo.png', sold: 0, likes: 8 },
-                        { id: 12, name: '清炒油麦菜', img: '/static/logo.png', sold: 0, likes: 5 },
-                        { id: 13, name: '清炒藕片', img: '/static/logo.png', sold: 0, likes: 8 },
-                        { id: 14, name: '炒生菜', img: '/static/logo.png', sold: 0, likes: 5 },
-                        { id: 15, name: '香葱煎蛋', img: '/static/logo.png', sold: 0, likes: 8 },
-                        { id: 16, name: '清炒油麦菜', img: '/static/logo.png', sold: 0, likes: 5 },
-                        { id: 17, name: '清炒藕片', img: '/static/logo.png', sold: 0, likes: 8 },
-                        { id: 18, name: '炒生菜', img: '/static/logo.png', sold: 0, likes: 5 },
-                        { id: 19, name: '香葱煎蛋', img: '/static/logo.png', sold: 0, likes: 8 },
-                        { id: 20, name: '清炒油麦菜', img: '/static/logo.png', sold: 0, likes: 5 }
-                    ]
-                },
-                {
-                    id: 2,
-                    name: '肉肉炒菜',
-                    emoji: '🥗',
-                    dishes: []
-                },
-                {
-                    id: 3,
-                    name: '大肉肉',
-                    emoji: '🍗',
-                    dishes: []
-                },
-                {
-                    id: 4,
-                    name: '美味汤羹',
-                    emoji: '🍲',
-                    dishes: []
-                },
-                {
-                    id: 5,
-                    name: '主食',
-                    emoji: '🍚',
-                    dishes: []
-                },
-                {
-                    id: 6,
-                    name: '小食',
-                    emoji: '🍡',
-                    dishes: []
-                },
-                {
-                    id: 6,
-                    name: '小食',
-                    emoji: '🍡',
-                    dishes: []
-                },
-                {
-                    id: 7,
-                    name: '小食',
-                    emoji: '🍡',
-                    dishes: []
-                },
-                {
-                    id: 8,
-                    name: '小食',
-                    emoji: '🍡',
-                    dishes: []
-                },
-                {
-                    id: 9,
-                    name: '小食',
-                    emoji: '🍡',
-                    dishes: []
-                },
-                {
-                    id: 10,
-                    name: '小食',
-                    emoji: '🍡',
-                    dishes: []
-                },
-                {
-                    id: 11,
-                    name: '小食',
-                    emoji: '🍡',
-                    dishes: []
-                },
-                {
-                    id: 12,
-                    name: '小食',
-                    emoji: '🍡',
-                    dishes: []
-                },
-                {
-                    id: 13,
-                    name: '小食',
-                    emoji: '🍡',
-                    dishes: []
-                },
-                {
-                    id: 14,
-                    name: '小食',
-                    emoji: '🍡',
-                    dishes: []
-                },
-                {
-                    id: 15,
-                    name: '小食',
-                    emoji: '🍡',
-                    dishes: []
-                },
-                {
-                    id: 16,
-                    name: '小食',
-                    emoji: '🍡',
-                    dishes: []
-                },
-                {
-                    id: 17,
-                    name: '小食',
-                    emoji: '🍡',
-                    dishes: []
-                }
-            ]
+            currentIndex: 0,
+            categories: [],
+            showDishForm: false,
+            currentCategoryId: null
         }
+    },
+    beforeMount() {
+        this.fetchAllCategory();
     },
     methods: {
         selectCategory(idx) {
-            this.currentCategory = idx
+            this.currentIndex = idx
+        },
+        fetchAllCategory() {
+            // 先请求所有分类
+            wx.request({
+                url: 'http://localhost:3000/category',
+                method: 'GET',
+                success: (catRes) => {
+                    // 再请求所有菜品
+                    wx.request({
+                        url: 'http://localhost:3000/dish',
+                        method: 'GET',
+                        success: (dishRes) => {
+                            // 假设每个菜品有 categoryId 字段
+                            const dishes = dishRes.data;
+                            this.categories = catRes.data.map(category => ({
+                                ...category,
+                                dishes: dishes.filter(dish => dish.pid === category.id)
+                            }));
+                        },
+                        fail: (err) => {
+                            console.error('获取菜品失败', err);
+                        }
+                    });
+                },
+                fail: (err) => {
+                    console.error('获取分类失败', err);
+                }
+            });
+        },
+        addDish() {
+            const currentCategory = this.categories[this.currentIndex];
+            this.currentCategoryId = currentCategory.id;
+            this.showDishForm = true;
+        },
+        onDishFormClose() {
+            this.showDishForm = false;
+        },
+        onDishFormSaved() {
+            this.showDishForm = false;
+            // 可选：刷新菜品列表
+            this.fetchAllCategory();
         }
     }
 }
 </script>
 <style scoped>
 .menu-section {
+    position: relative;
+    top: 190rpx;
     display: flex;
     flex-direction: row;
     background: #fff;
-    margin-top: 135rpx;
-    height: 100vh;
+    height: calc(100vh - 190rpx);
     overflow: scroll;
 }
 
@@ -192,11 +118,8 @@ export default {
     width: 230rpx;
     overflow-y: scroll;
     background: #f8f8f8;
-    border-radius: 0 30rpx 30rpx 0;
-    padding: 20rpx 0;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
 }
 
 .category-item {
@@ -218,7 +141,7 @@ export default {
     font-weight: bold;
 }
 
-.cat-emoji {
+.cat- {
     font-size: 32rpx;
     margin-right: 10rpx;
 }
@@ -238,9 +161,9 @@ export default {
     font-size: 30rpx;
     font-weight: bold;
     color: #222;
-    margin-bottom: 18rpx;
     display: flex;
     align-items: center;
+    margin-bottom: 20rpx;
 }
 
 .dish-item {
@@ -253,7 +176,7 @@ export default {
     padding: 16rpx 10rpx;
 }
 
-.dish-img {
+.dish-icon {
     width: 110rpx;
     height: 110rpx;
     border-radius: 12rpx;
@@ -299,5 +222,18 @@ export default {
     flex-direction: column;
     align-items: center;
     margin-left: 10rpx;
+}
+
+.dish-list-bottom {
+    font-size: 25rpx;
+    border-radius: 15rpx;
+    padding: 20rpx;
+    background-color: #f6f6f6;
+    color: #949494;
+    text-align: center;
+}
+
+.dish-list-bottom>.add-icon {
+    margin-right: 15rpx;
 }
 </style>
