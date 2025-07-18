@@ -8,12 +8,13 @@
             </view>
         </view>
 
-        <view class="dish-list" v-if="!showDishForm">
+        <view class="dish-list" v-if="!showDishForm && categories.length > 0">
             <view class="dish-category-title">
                 <text>{{ categories[currentIndex].name }}</text>
                 <text class="cat-icon">{{ categories[currentIndex].icon }}</text>
             </view>
-            <view v-for="dish in categories[currentIndex].dishes" :key="dish.id" class="dish-item">
+            <view v-for="dish in categories[currentIndex].dishes" :key="dish.id" class="dish-item"
+                @click="editDish(dish.id)">
                 <image class="dish-icon" :src="dish.icon" />
                 <view class="dish-info">
                     <view class="dish-title-row">
@@ -36,11 +37,13 @@
                 <span class="add-text">添加商品</span>
             </view>
         </view>
-        <dish v-if="showDishForm" :category-id="currentCategoryId" @close="onDishFormClose" @saved="onDishFormSaved" />
+        <dish v-if="showDishForm" :category-id="currentCategoryId" :id="currentDishId" @close="onDishFormClose"
+            @saved="onDishFormSaved" />
     </view>
 </template>
 <script>
 import Dish from './dish.vue'
+
 export default {
     components: { Dish },
     data() {
@@ -48,7 +51,8 @@ export default {
             currentIndex: 0,
             categories: [],
             showDishForm: false,
-            currentCategoryId: null
+            currentCategoryId: null,
+            currentDishId: null
         }
     },
     beforeMount() {
@@ -61,12 +65,12 @@ export default {
         fetchAllCategory() {
             // 先请求所有分类
             wx.request({
-                url: 'http://localhost:3000/category',
+                url: `http://localhost:3000/category`,
                 method: 'GET',
                 success: (catRes) => {
                     // 再请求所有菜品
                     wx.request({
-                        url: 'http://localhost:3000/dish',
+                        url: `http://localhost:3000/dish`,
                         method: 'GET',
                         success: (dishRes) => {
                             // 假设每个菜品有 categoryId 字段
@@ -86,7 +90,12 @@ export default {
                 }
             });
         },
+        editDish(id) {
+            this.currentDishId = id;
+            this.showDishForm = true;
+        },
         addDish() {
+            this.currentDishId = null;
             const currentCategory = this.categories[this.currentIndex];
             this.currentCategoryId = currentCategory.id;
             this.showDishForm = true;
@@ -94,7 +103,18 @@ export default {
         onDishFormClose() {
             this.showDishForm = false;
         },
-        onDishFormSaved() {
+        onDishFormSaved(data) {
+            wx.request({
+                url: http://localhost:3000/dish,
+                method: 'POST',
+                data,
+                success: (dishRes) => {
+                    console.log('dishRes :>> ', dishRes);
+                },
+                fail: (err) => {
+                    console.error('获取菜品失败', err);
+                }
+            });
             this.showDishForm = false;
             // 可选：刷新菜品列表
             this.fetchAllCategory();

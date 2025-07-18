@@ -22,7 +22,7 @@
             <input v-model="dish.remark" placeholder="请输入备注" />
         </view>
         <view class="form-actions">
-            <button class="back-btn" @click="onBack">返回</button>
+            <button class="back-btn" @click="onBack">取消</button>
             <button class="submit-btn" @click="submitDish">保存</button>
         </view>
     </view>
@@ -32,7 +32,11 @@ export default {
     props: {
         categoryId: {
             type: [String, Number],
-            required: true
+            default: null
+        },
+        id: {
+            type: [String, Number],
+            default: null
         }
     },
     data() {
@@ -44,6 +48,20 @@ export default {
                 score: '',
                 remark: ''
             }
+        }
+    },
+    created() {
+        if (this.id) {
+            wx.request({
+                url: `http://localhost:3000/dish?id=${this.id}`,
+                method: 'GET',
+                success: (res) => {
+                    this.dish = res.data[0];
+                },
+                fail: (err) => {
+                    console.error('获取菜品详情失败', err);
+                }
+            });
         }
     },
     methods: {
@@ -60,7 +78,7 @@ export default {
             // 这里可以做表单校验和提交逻辑
             console.log('提交菜品信息：', { ...this.dish, pid: this.categoryId });
             // TODO: 实际保存逻辑
-            this.$emit('saved');
+            this.$emit('saved', { ...this.dish, pid: this.categoryId });
         },
         onBack() {
             this.$emit('close');
@@ -77,16 +95,19 @@ export default {
     width: 100%;
     height: 100%;
 }
+
 .form-item {
     display: flex;
     align-items: center;
     margin-bottom: 30rpx;
 }
+
 .label {
     width: 120rpx;
     font-size: 28rpx;
     color: #333;
 }
+
 input {
     flex: 1;
     border: 1rpx solid #eee;
@@ -95,6 +116,7 @@ input {
     font-size: 28rpx;
     background: #fafafa;
 }
+
 .dish-image-preview {
     width: 100rpx;
     height: 100rpx;
@@ -102,11 +124,13 @@ input {
     border-radius: 8rpx;
     border: 1rpx solid #eee;
 }
+
 .form-actions {
     display: flex;
     justify-content: space-between;
     width: calc(100% - 60rpx);
 }
+
 .back-btn {
     background: #f8f8f8;
     color: #848484;
@@ -116,6 +140,7 @@ input {
     flex: 1;
     margin-right: 20rpx;
 }
+
 .submit-btn {
     background: #fe4a63;
     color: #fff;
@@ -125,7 +150,7 @@ input {
     flex: 1;
 }
 
-.image-btn{
+.image-btn {
     margin-left: 0;
     height: 50rpx;
     line-height: 50rpx;
